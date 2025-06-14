@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TeamPulse - Soziometrie & Mental Health für Teams</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-gray-900 text-white">
+    <!-- Cookie Banner -->
+    <div id="cookieBanner" class="fixed bottom-0 left-0 right-0 bg-gray-800 p-4 z-50 hidden">
+        <div class="container mx-auto flex justify-between items-center">
+            <p class="text-sm">Wir verwenden Cookies für Analyse und Zahlungen. <a href="#privacy" class="underline">Datenschutz</a></p>
+            <button onclick="acceptCookies()" class="bg-blue-600 px-4 py-2 rounded text-sm">Akzeptieren</button>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="container mx-auto px-4 py-6">
+        <nav class="flex justify-between items-center">
+            <div class="text-2xl font-bold">TeamPulse</div>
+            <div class="space-x-6">
+                <a href="#features" class="hover:text-blue-400">Features</a>
+                <a href="#pricing" class="hover:text-blue-400">Preise</a>
+                <a href="#contact" class="hover:text-blue-400">Kontakt</a>
+                <a href="/admin.html" class="bg-blue-600 px-4 py-2 rounded hover:bg-blue-700">Admin</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero -->
+    <section class="container mx-auto px-4 py-20 text-center">
+        <h1 class="text-5xl font-bold mb-6">Teamdynamik wissenschaftlich messen</h1>
+        <p class="text-xl mb-8 text-gray-300">Soziometrie + Mental Health Diagnostik für moderne Teams</p>
+        <div class="glass-panel max-w-2xl mx-auto p-8">
+            <img src="/assets/demo.gif" alt="Demo" class="w-full h-64 object-cover rounded mb-6 bg-gray-700">
+            <div class="grid grid-cols-3 gap-4 text-center">
+                <div>
+                    <div class="text-3xl font-bold text-blue-400">15min</div>
+                    <div class="text-sm text-gray-400">pro Mitarbeiter</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold text-blue-400">48h</div>
+                    <div class="text-sm text-gray-400">bis zum Report</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold text-blue-400">100%</div>
+                    <div class="text-sm text-gray-400">DSGVO-konform</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section id="features" class="container mx-auto px-4 py-20">
+        <h2 class="text-4xl font-bold text-center mb-12">Wissenschaftliche Metriken</h2>
+        <div class="grid md:grid-cols-3 gap-8">
+            <div class="glass-panel p-6">
+                <h3 class="text-xl font-bold mb-3">Soziometrische Analyse</h3>
+                <ul class="space-y-2 text-gray-300">
+                    <li>• Status & Zentralität</li>
+                    <li>• Netzwerkdichte</li>
+                    <li>• Reziprozität</li>
+                    <li>• Cliquen-Erkennung</li>
+                </ul>
+            </div>
+            <div class="glass-panel p-6">
+                <h3 class="text-xl font-bold mb-3">Mental Health Indikatoren</h3>
+                <ul class="space-y-2 text-gray-300">
+                    <li>• Burnout-Risiko</li>
+                    <li>• Team-Positivität</li>
+                    <li>• Stress-Level</li>
+                    <li>• Engagement-Score</li>
+                </ul>
+            </div>
+            <div class="glass-panel p-6">
+                <h3 class="text-xl font-bold mb-3">KI-gestützte Insights</h3>
+                <ul class="space-y-2 text-gray-300">
+                    <li>• Quick Wins</li>
+                    <li>• Risiko-Analyse</li>
+                    <li>• 90-Tage-Plan</li>
+                    <li>• Maßnahmen-Empfehlungen</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Calculator -->
+    <section id="pricing" class="container mx-auto px-4 py-20">
+        <h2 class="text-4xl font-bold text-center mb-12">Preiskalkulator</h2>
+        <div class="glass-panel max-w-2xl mx-auto p-8">
+            <div class="space-y-6">
+                <div>
+                    <label class="block mb-2">Anzahl Teammitglieder</label>
+                    <input type="range" id="members" min="4" max="50" value="10" class="w-full">
+                    <div class="flex justify-between text-sm text-gray-400">
+                        <span>4</span>
+                        <span id="membersValue" class="text-blue-400 font-bold">10</span>
+                        <span>50</span>
+                    </div>
+                </div>
+                <div>
+                    <label class="block mb-2">Anzahl Bewertungskriterien</label>
+                    <input type="range" id="criteria" min="2" max="10" value="3" class="w-full">
+                    <div class="flex justify-between text-sm text-gray-400">
+                        <span>2</span>
+                        <span id="criteriaValue" class="text-blue-400 font-bold">3</span>
+                        <span>10</span>
+                    </div>
+                </div>
+                <div class="border-t pt-6">
+                    <div class="flex justify-between mb-2">
+                        <span>Basispreis (4 Personen, 2 Kriterien)</span>
+                        <span>750 €</span>
+                    </div>
+                    <div class="flex justify-between mb-2 text-sm text-gray-400">
+                        <span>Zusätzliche Personen</span>
+                        <span id="extraPeoplePrice">0 €</span>
+                    </div>
+                    <div class="flex justify-between mb-4 text-sm text-gray-400">
+                        <span>Zusätzliche Kriterien</span>
+                        <span id="extraCriteriaPrice">0 €</span>
+                    </div>
+                    <div class="flex justify-between text-2xl font-bold">
+                        <span>Gesamtpreis</span>
+                        <span id="totalPrice">750 €</span>
+                    </div>
+                </div>
+                <div class="mt-8 space-y-4">
+                    <input type="text" id="company" placeholder="Firmenname" class="w-full p-3 rounded bg-gray-800 border border-gray-700">
+                    <input type="email" id="email" placeholder="E-Mail" class="w-full p-3 rounded bg-gray-800 border border-gray-700">
+                    <button onclick="checkout()" class="w-full bg-blue-600 py-3 rounded font-bold hover:bg-blue-700">
+                        Mit Stripe bezahlen
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 mt-20">
+        <div class="container mx-auto px-4 py-12">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <h4 class="font-bold mb-4">Rechtliches</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="#impressum" class="hover:text-white">Impressum</a></li>
+                        <li><a href="#privacy" class="hover:text-white">Datenschutz</a></li>
+                        <li><a href="#agb" class="hover:text-white">AGB</a></li>
+                        <li><a href="#widerruf" class="hover:text-white">Widerrufsrecht</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Kontakt</h4>
+                    <p class="text-sm text-gray-400">
+                        TeamPulse GmbH<br>
+                        Musterstraße 123<br>
+                        10115 Berlin<br>
+                        info@teampulse.de
+                    </p>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Zahlungsmittel</h4>
+                    <p class="text-sm text-gray-400">
+                        Kreditkarte (Visa, Mastercard)<br>
+                        SEPA-Lastschrift<br>
+                        Stripe Checkout
+                    </p>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Support</h4>
+                    <p class="text-sm text-gray-400">
+                        Mo-Fr 9-17 Uhr<br>
+                        support@teampulse.de<br>
+                        +49 30 12345678
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Legal Sections -->
+    <div id="impressum" class="container mx-auto px-4 py-8 hidden">
+        <h2 class="text-2xl font-bold mb-4">Impressum</h2>
+        <p class="text-gray-300">
+            TeamPulse GmbH<br>
+            Geschäftsführer: Max Mustermann<br>
+            Musterstraße 123, 10115 Berlin<br>
+            Handelsregister: HRB 123456 B<br>
+            Registergericht: Amtsgericht Charlottenburg<br>
+            USt-IdNr.: DE123456789<br>
+            Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV: Max Mustermann
+        </p>
+    </div>
+
+    <div id="privacy" class="container mx-auto px-4 py-8 hidden">
+        <h2 class="text-2xl font-bold mb-4">Datenschutzerklärung</h2>
+        <p class="text-gray-300 mb-4">
+            Gemäß Art. 13 DSGVO informieren wir Sie über die Verarbeitung Ihrer personenbezogenen Daten:
+        </p>
+        <h3 class="text-xl font-bold mb-2">1. Verantwortlicher</h3>
+        <p class="text-gray-300 mb-4">TeamPulse GmbH, Musterstraße 123, 10115 Berlin</p>
+        <h3 class="text-xl font-bold mb-2">2. Zweck der Datenverarbeitung</h3>
+        <p class="text-gray-300 mb-4">
+            Durchführung soziometrischer Analysen, Vertragsabwicklung, Zahlungsabwicklung über Stripe
+        </p>
+        <h3 class="text-xl font-bold mb-2">3. Rechtsgrundlage</h3>
+        <p class="text-gray-300 mb-4">Art. 6 Abs. 1 lit. b DSGVO (Vertragserfüllung)</p>
+        <h3 class="text-xl font-bold mb-2">4. Speicherdauer</h3>
+        <p class="text-gray-300 mb-4">Löschung 90 Tage nach Projektabschluss, soweit keine gesetzlichen Aufbewahrungspflichten bestehen</p>
+    </div>
+
+    <div id="agb" class="container mx-auto px-4 py-8 hidden">
+        <h2 class="text-2xl font-bold mb-4">Allgemeine Geschäftsbedingungen</h2>
+        <h3 class="text-xl font-bold mb-2">§1 Geltungsbereich</h3>
+        <p class="text-gray-300 mb-4">Diese AGB gelten für alle Verträge zwischen der TeamPulse GmbH und ihren Kunden.</p>
+        <h3 class="text-xl font-bold mb-2">§2 Vertragsschluss</h3>
+        <p class="text-gray-300 mb-4">Der Vertrag kommt durch Zahlung über Stripe Checkout zustande.</p>
+        <h3 class="text-xl font-bold mb-2">§3 Leistungen</h3>
+        <p class="text-gray-300 mb-4">Bereitstellung der Soziometrie-Plattform für die gebuchte Anzahl an Personen und Kriterien.</p>
+    </div>
+
+    <div id="widerruf" class="container mx-auto px-4 py-8 hidden">
+        <h2 class="text-2xl font-bold mb-4">Widerrufsbelehrung</h2>
+        <p class="text-gray-300 mb-4">
+            Sie haben das Recht, binnen vierzehn Tagen ohne Angabe von Gründen diesen Vertrag zu widerrufen.
+            Die Widerrufsfrist beträgt vierzehn Tage ab dem Tag des Vertragsschlusses.
+            Um Ihr Widerrufsrecht auszuüben, müssen Sie uns mittels einer eindeutigen Erklärung 
+            (z.B. ein mit der Post versandter Brief oder E-Mail) über Ihren Entschluss, 
+            diesen Vertrag zu widerrufen, informieren.
+        </p>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>

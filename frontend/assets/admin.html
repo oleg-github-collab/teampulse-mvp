@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TeamPulse Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-gray-900 text-white">
+    <!-- Header -->
+    <header class="bg-gray-800 border-b border-gray-700">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <h1 class="text-2xl font-bold">TeamPulse Admin</h1>
+                <div class="flex items-center space-x-4">
+                    <span id="userEmail" class="text-gray-400">Loading...</span>
+                    <a href="/" class="text-blue-400 hover:underline">Zur Landingpage</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Project List -->
+        <div id="projectList" class="mb-8">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-3xl font-bold">Meine Projekte</h2>
+                <button onclick="showNewProjectDialog()" class="bg-blue-600 px-4 py-2 rounded hover:bg-blue-700">
+                    + Neues Projekt
+                </button>
+            </div>
+            
+            <div class="glass-panel overflow-hidden">
+                <table class="w-full">
+                    <thead class="bg-gray-800">
+                        <tr>
+                            <th class="px-6 py-3 text-left">Projekt</th>
+                            <th class="px-6 py-3 text-left">Erstellt</th>
+                            <th class="px-6 py-3 text-left">Umfragen</th>
+                            <th class="px-6 py-3 text-left">Status</th>
+                            <th class="px-6 py-3 text-right">Aktionen</th>
+                        </tr>
+                    </thead>
+                    <tbody id="projectsTable" class="divide-y divide-gray-700">
+                        <!-- Projects will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Project Details -->
+        <div id="projectDetails" class="hidden">
+            <button onclick="backToList()" class="mb-4 text-blue-400 hover:underline">← Zurück zur Übersicht</button>
+            
+            <div class="glass-panel p-6 mb-6">
+                <h2 id="projectName" class="text-2xl font-bold mb-4"></h2>
+                <p id="projectDescription" class="text-gray-300 mb-4"></p>
+                
+                <div class="grid grid-cols-4 gap-4 mb-6">
+                    <div class="bg-gray-800 p-4 rounded">
+                        <div class="text-2xl font-bold text-blue-400" id="totalResponses">0</div>
+                        <div class="text-sm text-gray-400">Antworten</div>
+                    </div>
+                    <div class="bg-gray-800 p-4 rounded">
+                        <div class="text-2xl font-bold text-green-400" id="responseRate">0%</div>
+                        <div class="text-sm text-gray-400">Rücklaufquote</div>
+                    </div>
+                    <div class="bg-gray-800 p-4 rounded">
+                        <div class="text-2xl font-bold text-yellow-400" id="avgMentalHealth">-</div>
+                        <div class="text-sm text-gray-400">Mental Health</div>
+                    </div>
+                    <div class="bg-gray-800 p-4 rounded">
+                        <div class="text-2xl font-bold text-purple-400" id="networkDensity">-</div>
+                        <div class="text-sm text-gray-400">Netzwerkdichte</div>
+                    </div>
+                </div>
+
+                <div class="flex space-x-4">
+                    <button onclick="showNewSurveyDialog()" class="bg-blue-600 px-4 py-2 rounded hover:bg-blue-700">
+                        Neue Umfrage erstellen
+                    </button>
+                    <button onclick="calcMetrics()" class="bg-green-600 px-4 py-2 rounded hover:bg-green-700">
+                        Report berechnen
+                    </button>
+                    <button onclick="downloadPDF()" class="bg-purple-600 px-4 py-2 rounded hover:bg-purple-700">
+                        PDF Download
+                    </button>
+                </div>
+            </div>
+
+            <!-- Surveys List -->
+            <div class="glass-panel p-6">
+                <h3 class="text-xl font-bold mb-4">Umfragen</h3>
+                <div id="surveysList" class="space-y-4">
+                    <!-- Surveys will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- New Project Dialog -->
+    <div id="newProjectDialog" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+        <div class="glass-panel p-6 max-w-md w-full mx-4">
+            <h3 class="text-xl font-bold mb-4">Neues Projekt erstellen</h3>
+            <form onsubmit="createProject(event)">
+                <div class="space-y-4">
+                    <input type="text" id="newProjectName" placeholder="Projektname" required 
+                           class="w-full p-3 rounded bg-gray-800 border border-gray-700">
+                    <textarea id="newProjectDescription" placeholder="Beschreibung" rows="3" 
+                              class="w-full p-3 rounded bg-gray-800 border border-gray-700"></textarea>
+                    <div>
+                        <label class="block mb-2">Geschätzte Teammitglieder</label>
+                        <input type="number" id="estMembers" min="4" max="100" value="10" 
+                               class="w-full p-3 rounded bg-gray-800 border border-gray-700">
+                    </div>
+                    <div>
+                        <label class="block mb-2">Anzahl Kriterien</label>
+                        <input type="number" id="numCriteria" min="2" max="10" value="3" 
+                               class="w-full p-3 rounded bg-gray-800 border border-gray-700">
+                    </div>
+                    <div class="bg-gray-800 p-4 rounded">
+                        <div class="text-sm text-gray-400">Geschätzter Preis</div>
+                        <div id="estimatedPrice" class="text-2xl font-bold text-blue-400">975 €</div>
+                    </div>
+                </div>
+                <div class="flex justify-end space-x-4 mt-6">
+                    <button type="button" onclick="closeDialog('newProjectDialog')" 
+                            class="px-4 py-2 rounded bg-gray-700 hover:bg-gray-600">Abbrechen</button>
+                    <button type="submit" class="px-4 py-2 rounded bg-blue-600 hover:bg-blue-700">
+                        Projekt erstellen
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- New Survey Dialog -->
+    <div id="newSurveyDialog" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+        <div class="glass-panel p-6 max-w-md w-full mx-4">
+            <h3 class="text-xl font-bold mb-4">Neue Umfrage erstellen</h3>
+            <form onsubmit="createSurvey(event)">
+                <div class="space-y-4">
+                    <input type="text" id="surveyTitle" placeholder="Umfrage-Titel" required 
+                           class="w-full p-3 rounded bg-gray-800 border border-gray-700">
+                    <textarea id="surveyDescription" placeholder="Beschreibung / Ziel" rows="3" required
+                              class="w-full p-3 rounded bg-gray-800 border border-gray-700"></textarea>
+                    <textarea id="surveyEmails" placeholder="E-Mail-Adressen (eine pro Zeile)" rows="5" 
+                              class="w-full p-3 rounded bg-gray-800 border border-gray-700 font-mono text-sm"></textarea>
+                    <div class="text-sm text-gray-400">
+                        Die KI generiert automatisch passende Fragen basierend auf Ihrer Beschreibung.
+                    </div>
+                </div>
+                <div class="flex justify-end space-x-4 mt-6">
+                    <button type="button" onclick="closeDialog('newSurveyDialog')" 
+                            class="px-4 py-2 rounded bg-gray-700 hover:bg-gray-600">Abbrechen</button>
+                    <button type="submit" id="createSurveyBtn" class="px-4 py-2 rounded bg-blue-600 hover:bg-blue-700">
+                        Umfrage generieren
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div id="loadingSpinner" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+        <div class="spinner"></div>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+</html>
