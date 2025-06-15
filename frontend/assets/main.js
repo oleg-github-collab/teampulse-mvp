@@ -1,5 +1,3 @@
-// main.js
-
 // Pricing calculator
 const membersSlider = document.getElementById('members');
 const criteriaSlider = document.getElementById('criteria');
@@ -12,46 +10,53 @@ const totalPrice = document.getElementById('totalPrice');
 function calc() {
     const members = parseInt(membersSlider.value);
     const criteria = parseInt(criteriaSlider.value);
-    
+
     const basePrice = 750;
     const extraPeople = Math.max(0, members - 4) * 75;
     const extraCriteria = Math.max(0, criteria - 2) * 250;
     const total = basePrice + extraPeople + extraCriteria;
-    
+
     membersValue.textContent = members;
     criteriaValue.textContent = criteria;
     extraPeoplePrice.textContent = extraPeople + ' €';
     extraCriteriaPrice.textContent = extraCriteria + ' €';
     totalPrice.textContent = total + ' €';
-    
+
     return { members, criteria, total };
 }
 
 membersSlider.addEventListener('input', calc);
 criteriaSlider.addEventListener('input', calc);
 
-// Stripe checkout
+// Stripe checkout with redirect handling
 async function checkout() {
     const company = document.getElementById('company').value;
     const email = document.getElementById('email').value;
-    
+
     if (!company || !email) {
         alert('Bitte alle Felder ausfüllen');
         return;
     }
-    
+
     const { members, criteria, total } = calc();
-    
+
     try {
         const response = await fetch('/api/checkout', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ members, criteria, total, company, email })
         });
-        
-        const data = await response.json();
-        if (data.url) {
-            window.location.href = data.url;
+
+        if (response.redirected) {
+            // Якщо сервер повернув редірект — переходимо
+            window.location.href = response.url;
+        } else {
+            const data = await response.json();
+            if (data.url) {
+                window.location.href = data.url;
+            } else {
+                alert('Fehler: Keine URL vom Server');
+            }
         }
     } catch (error) {
         alert('Fehler beim Checkout: ' + error.message);
