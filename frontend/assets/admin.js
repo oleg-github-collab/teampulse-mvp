@@ -2,7 +2,7 @@
 // admin.js
 
 let currentProject = null;
-const API_BASE = 'https://script.google.com/macros/s/AKfycbw5nDlGyInjL-C0FFKLYkHYwkx3w7Vhm5XXsMrpBt5tPDTN8QNxWpQscHQ3JYnthhFf/exec';
+const API_BASE = 'https://script.google.com/macros/s/AKfycbznT16XzUK5lP1lbASQzzIaGTKLcBirrLcNU4oIO6x26nZ7i2byv4hyX2EKmZ6pBXcx/exec';
 
 // Load projects on init
 document.addEventListener('DOMContentLoaded', () => {
