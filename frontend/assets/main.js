@@ -1,99 +1,96 @@
-```css
-// styles.css
+// main.js
 
-/* Glassmorphism */
-.glass-panel {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+// Pricing calculator
+const membersSlider = document.getElementById('members');
+const criteriaSlider = document.getElementById('criteria');
+const membersValue = document.getElementById('membersValue');
+const criteriaValue = document.getElementById('criteriaValue');
+const extraPeoplePrice = document.getElementById('extraPeoplePrice');
+const extraCriteriaPrice = document.getElementById('extraCriteriaPrice');
+const totalPrice = document.getElementById('totalPrice');
+
+function calc() {
+    const members = parseInt(membersSlider.value);
+    const criteria = parseInt(criteriaSlider.value);
+    
+    const basePrice = 750;
+    const extraPeople = Math.max(0, members - 4) * 75;
+    const extraCriteria = Math.max(0, criteria - 2) * 250;
+    const total = basePrice + extraPeople + extraCriteria;
+    
+    membersValue.textContent = members;
+    criteriaValue.textContent = criteria;
+    extraPeoplePrice.textContent = extraPeople + ' €';
+    extraCriteriaPrice.textContent = extraCriteria + ' €';
+    totalPrice.textContent = total + ' €';
+    
+    return { members, criteria, total };
 }
 
-/* Custom scrollbar */
-::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+membersSlider.addEventListener('input', calc);
+criteriaSlider.addEventListener('input', calc);
+
+// Stripe checkout
+async function checkout() {
+    const company = document.getElementById('company').value;
+    const email = document.getElementById('email').value;
+    
+    if (!company || !email) {
+        alert('Bitte alle Felder ausfüllen');
+        return;
+    }
+    
+    const { members, criteria, total } = calc();
+    
+    try {
+        const response = await fetch('/api/checkout', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ members, criteria, total, company, email })
+        });
+        
+        const data = await response.json();
+        if (data.url) {
+            window.location.href = data.url;
+        }
+    } catch (error) {
+        alert('Fehler beim Checkout: ' + error.message);
+    }
 }
 
-::-webkit-scrollbar-track {
-    background: #1a1a1a;
+// Cookie banner
+function acceptCookies() {
+    localStorage.setItem('cookiesAccepted', 'true');
+    document.getElementById('cookieBanner').classList.add('hidden');
 }
 
-::-webkit-scrollbar-thumb {
-    background: #4a4a4a;
-    border-radius: 4px;
+// Show cookie banner if not accepted
+if (!localStorage.getItem('cookiesAccepted')) {
+    document.getElementById('cookieBanner').classList.remove('hidden');
 }
 
-::-webkit-scrollbar-thumb:hover {
-    background: #606060;
-}
+// Smooth scroll
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({ behavior: 'smooth' });
+        }
+    });
+});
 
-/* Range input styling */
-input[type="range"] {
-    -webkit-appearance: none;
-    width: 100%;
-    height: 6px;
-    border-radius: 3px;
-    background: #374151;
-    outline: none;
-}
+// Show legal sections
+window.addEventListener('hashchange', () => {
+    const sections = ['impressum', 'privacy', 'agb', 'widerruf'];
+    sections.forEach(id => {
+        document.getElementById(id)?.classList.add('hidden');
+    });
+    const hash = window.location.hash.substring(1);
+    if (sections.includes(hash)) {
+        document.getElementById(hash)?.classList.remove('hidden');
+    }
+});
 
-input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: #3b82f6;
-    cursor: pointer;
-}
-
-input[type="range"]::-moz-range-thumb {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: #3b82f6;
-    cursor: pointer;
-}
-
-/* Button hover effects */
-button {
-    transition: all 0.3s ease;
-}
-
-/* Loading spinner */
-.spinner {
-    border: 3px solid rgba(255, 255, 255, 0.1);
-    border-radius: 50%;
-    border-top: 3px solid #3b82f6;
-    width: 40px;
-    height: 40px;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-/* D3 chart styles */
-.node {
-    stroke: #fff;
-    stroke-width: 1.5px;
-}
-
-.link {
-    stroke: #999;
-    stroke-opacity: 0.6;
-}
-
-.chord {
-    fill-opacity: 0.67;
-}
-
-/* Smooth transitions */
-* {
-    transition: color 0.2s ease, background-color 0.2s ease;
-}
-```
+// Initialize calculator
+calc();
