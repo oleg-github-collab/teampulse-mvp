@@ -28,7 +28,7 @@ function calc() {
 membersSlider.addEventListener('input', calc);
 criteriaSlider.addEventListener('input', calc);
 
-// Stripe checkout with redirect handling
+// Stripe checkout with proper action
 async function checkout() {
     const company = document.getElementById('company').value;
     const email = document.getElementById('email').value;
@@ -44,11 +44,17 @@ async function checkout() {
         const response = await fetch('/api/checkout', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ members, criteria, total, company, email })
+            body: JSON.stringify({
+                action: "checkout", // ОБОВ'ЯЗКОВО!
+                members,
+                criteria,
+                total,
+                company,
+                email
+            })
         });
 
         if (response.redirected) {
-            // Якщо сервер повернув редірект — переходимо
             window.location.href = response.url;
         } else {
             const data = await response.json();
@@ -69,7 +75,6 @@ function acceptCookies() {
     document.getElementById('cookieBanner').classList.add('hidden');
 }
 
-// Show cookie banner if not accepted
 if (!localStorage.getItem('cookiesAccepted')) {
     document.getElementById('cookieBanner').classList.remove('hidden');
 }
