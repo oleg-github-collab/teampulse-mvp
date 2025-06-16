@@ -1,4 +1,3 @@
-```javascript
 // stripe.gs
 
 function createCheckout(data) {
@@ -243,4 +242,3 @@ function createStripeProduct() {
     return null;
   }
 }
-```

@@ -1,4 +1,3 @@
-```javascript
 // forms.gs
 
 function serveSurveyPage(projectId, surveyId, token) {
@@ -212,4 +211,3 @@ function getTeamMemberOptions() {
   
   return members.map(m => `<option value="${m}">${m}</option>`).join('');
 }
-```

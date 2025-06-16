@@ -1,4 +1,3 @@
-```javascript
 // projects.gs
 
 function createProject(data) {
@@ -187,4 +186,3 @@ function calculateResponseRate(spreadsheet) {
   
   return totalEmails > 0 ? Math.round((totalResponses / totalEmails) * 100) : 0;
 }
-```
