@@ -1,4 +1,3 @@
-```javascript
 // responses.gs
 
 function onSurveySubmit(data) {
@@ -184,4 +183,3 @@ function exportResponses(projectId, format = 'csv') {
   // Add other formats as needed
   return null;
 }
-```
