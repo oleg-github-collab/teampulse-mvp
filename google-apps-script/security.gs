@@ -1,4 +1,3 @@
-```javascript
 // security.gs
 
 function signURL(data) {
@@ -186,4 +185,3 @@ function setupSecurityHeaders(output) {
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.DENY)
     .setSandboxMode(HtmlService.SandboxMode.IFRAME);
 }
-```

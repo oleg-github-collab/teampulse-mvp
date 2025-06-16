@@ -1,4 +1,3 @@
-```javascript
 // surveys.gs
 
 function createSurvey(data) {
@@ -232,4 +231,3 @@ function updateProjectSurveyCount(projectId) {
     }
   }
 }
-```

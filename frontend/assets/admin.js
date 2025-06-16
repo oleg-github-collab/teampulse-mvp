@@ -1,4 +1,3 @@
-```javascript
 // admin.js
 
 let currentProject = null;
@@ -305,4 +304,3 @@ function updateEstimatedPrice() {
 
 document.getElementById('estMembers').addEventListener('input', updateEstimatedPrice);
 document.getElementById('numCriteria').addEventListener('input', updateEstimatedPrice);
-```

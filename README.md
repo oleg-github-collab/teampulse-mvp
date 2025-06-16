@@ -42,7 +42,31 @@ cd /var/www/teampulse
 sudo chmod -R 755 /var/www/teampulse
 ```
 
-## 3. Configure Nginx (5 min)
+## 3. Setup Backend (5 min)
+
+```bash
+# Install Node.js if missing
+sudo apt install -y nodejs npm
+
+# Copy backend files
+mkdir -p /var/www/teampulse/backend
+cp -r server/* /var/www/teampulse/backend/
+cd /var/www/teampulse/backend
+npm install
+
+# Create .env with your secrets
+cat <<EOF > .env
+STRIPE_SK=sk_live_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+APPS_SCRIPT_URL=https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec
+DOMAIN=https://yourdomain.com
+EOF
+
+# Start the server (use pm2 or systemd in production)
+node server.js &
+```
+
+## 4. Configure Nginx (5 min)
 
 ```bash
 # Create nginx config
@@ -60,6 +84,14 @@ server {
 
     location / {
         try_files $uri $uri/ =404;
+    }
+
+    location /api/checkout {
+        proxy_pass http://localhost:3000/checkout;
+    }
+
+    location /api/webhook {
+        proxy_pass http://localhost:3000/webhook;
     }
 
     location /api {
@@ -80,7 +112,7 @@ sudo systemctl reload nginx
 sudo certbot --nginx -d yourdomain.com -d www.yourdomain.com
 ```
 
-## 4. Google Apps Script Setup (10 min)
+## 5. Google Apps Script Setup (10 min)
 
 1. Go to [script.google.com](https://script.google.com)
 2. Create new project "TeamPulse Backend"
@@ -115,7 +147,7 @@ sudo certbot --nginx -d yourdomain.com -d www.yourdomain.com
      - DOMAIN: https://yourdomain.com
      - STRIPE_WEBHOOK_SECRET: whsec_...
 
-## 5. Update Frontend URLs (2 min)
+## 6. Update Frontend URLs (2 min)
 
 ```bash
 # Update API_BASE in admin.js
@@ -124,7 +156,7 @@ sed -i 's|YOUR_SCRIPT_ID|actual-script-id|g' /var/www/teampulse/admin.js
 # Update domain in main.js if needed
 ```
 
-## 6. Stripe Setup (5 min)
+## 7. Stripe Setup (5 min)
 
 1. Login to Stripe Dashboard
 2. Create webhook endpoint:
@@ -136,7 +168,7 @@ sed -i 's|YOUR_SCRIPT_ID|actual-script-id|g' /var/www/teampulse/admin.js
    - Enable SEPA Direct Debit
    - Configure invoice settings
 
-## 7. Create Initial Data (3 min)
+## 8. Create Initial Data (3 min)
 
 1. Go to Google Drive
 2. Create folder "Sociometry-Projects"
@@ -150,7 +182,7 @@ function initialSetup() {
 }
 ```
 
-## 8. Test Deployment
+## 9. Test Deployment
 
 1. Visit https://yourdomain.com
 2. Test pricing calculator

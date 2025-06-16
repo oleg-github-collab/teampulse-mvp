@@ -1,4 +1,3 @@
-```javascript
 // Code.gs
 
 function doGet(e) {
@@ -101,4 +100,3 @@ function setup() {
   initProperties();
   createProjectsFolder();
 }
-```

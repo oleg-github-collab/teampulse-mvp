@@ -1,4 +1,3 @@
-```javascript
 // analytics.gs
 
 function calcMetrics(projectId) {
@@ -294,4 +293,3 @@ function generateOnePagerHTML(spreadsheet, projectName) {
 </body>
 </html>`;
 }
-```

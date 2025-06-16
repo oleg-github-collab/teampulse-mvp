@@ -1,4 +1,3 @@
-```javascript
 // config.gs
 
 function getConfig(key) {
@@ -256,4 +255,3 @@ function importConfig(jsonString) {
     return {success: false, error: e.toString()};
   }
 }
-```
