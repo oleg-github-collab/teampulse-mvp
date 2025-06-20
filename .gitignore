@@ -4,3 +4,5 @@ node_modules/
 
 # SSH keys
 ssh.teampulse*
+.env
+.env.example
