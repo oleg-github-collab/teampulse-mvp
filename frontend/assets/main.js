@@ -18,9 +18,9 @@ function calc() {
 
     membersValue.textContent = members;
     criteriaValue.textContent = criteria;
-    extraPeoplePrice.textContent = extraPeople + ' €';
-    extraCriteriaPrice.textContent = extraCriteria + ' €';
-    totalPrice.textContent = total + ' €';
+    extraPeoplePrice.textContent = `${extraPeople} €`;
+    extraCriteriaPrice.textContent = `${extraCriteria} €`;
+    totalPrice.textContent = `${total} €`;
 
     return { members, criteria, total };
 }
@@ -28,11 +28,12 @@ function calc() {
 membersSlider.addEventListener('input', calc);
 criteriaSlider.addEventListener('input', calc);
 
-// Stripe checkout with proper action
+// Stripe checkout with diagnostics
 async function checkout() {
-    const company = document.getElementById('company').value;
-    const email = document.getElementById('email').value;
-
+    const company = document.getElementById('company').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const button = document.querySelector('button[onclick="checkout()"]');
+    
     if (!company || !email) {
         alert('Bitte alle Felder ausfüllen');
         return;
@@ -40,12 +41,15 @@ async function checkout() {
 
     const { members, criteria, total } = calc();
 
+    button.disabled = true;
+    button.textContent = 'Bitte warten...';
+
     try {
         const response = await fetch('/api/checkout', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                action: "checkout", // ОБОВ'ЯЗКОВО!
+                action: "checkout",
                 members,
                 criteria,
                 total,
@@ -54,18 +58,32 @@ async function checkout() {
             })
         });
 
-        if (response.redirected) {
-            window.location.href = response.url;
-        } else {
-            const data = await response.json();
-            if (data.url) {
-                window.location.href = data.url;
-            } else {
-                alert('Fehler: Keine URL vom Server');
-            }
+        const raw = await response.text();
+        console.log("Server raw response:", raw);
+
+        let data;
+        try {
+            data = JSON.parse(raw);
+        } catch (err) {
+            alert("Server returned invalid JSON. Check console.");
+            console.error("JSON parse error:", err);
+            return;
         }
+
+        if (data.url) {
+            window.location.href = data.url;
+        } else if (data.error) {
+            alert(`Fehler vom Server: ${data.error}`);
+        } else {
+            alert('Unerwartete Antwort vom Server.');
+        }
+
     } catch (error) {
+        console.error("Checkout error:", error);
         alert('Fehler beim Checkout: ' + error.message);
+    } finally {
+        button.disabled = false;
+        button.textContent = 'Mit Stripe bezahlen';
     }
 }
 
@@ -94,11 +112,13 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 window.addEventListener('hashchange', () => {
     const sections = ['impressum', 'privacy', 'agb', 'widerruf'];
     sections.forEach(id => {
-        document.getElementById(id)?.classList.add('hidden');
+        const el = document.getElementById(id);
+        if (el) el.classList.add('hidden');
     });
     const hash = window.location.hash.substring(1);
     if (sections.includes(hash)) {
-        document.getElementById(hash)?.classList.remove('hidden');
+        const el = document.getElementById(hash);
+        if (el) el.classList.remove('hidden');
     }
 });
 
