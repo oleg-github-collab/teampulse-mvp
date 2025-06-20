@@ -54,61 +54,24 @@ cp -r server/* /var/www/teampulse/backend/
 cd /var/www/teampulse/backend
 npm install
 
-# Create .env with your secrets
-cat <<EOF > .env
-STRIPE_SK=sk_live_...
-STRIPE_WEBHOOK_SECRET=whsec_...
-APPS_SCRIPT_URL=https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec
-DOMAIN=https://yourdomain.com
-EOF
+# Copy example env and edit with your keys
+cp /path/to/repo/.env.example .env
+nano .env
 
-# Start the server (use pm2 or systemd in production)
-node server.js &
+# Start the server with pm2
+pm2 start /path/to/repo/ecosystem.config.js --update-env
+pm2 save
+pm2 startup systemd
 ```
 
 ## 4. Configure Nginx (5 min)
 
 ```bash
-# Create nginx config
-sudo nano /etc/nginx/sites-available/teampulse
-
-# Add this configuration:
-```
-
-```nginx
-server {
-    listen 80;
-    server_name yourdomain.com www.yourdomain.com;
-    root /var/www/teampulse;
-    index index.html;
-
-    location / {
-        try_files $uri $uri/ =404;
-    }
-
-    location /api/checkout {
-        proxy_pass http://localhost:3000/checkout;
-    }
-
-    location /api/webhook {
-        proxy_pass http://localhost:3000/webhook;
-    }
-
-    location /api {
-        proxy_pass https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-    }
-}
-```
-
-```bash
-# Enable site
+# Copy nginx config
+sudo cp /path/to/repo/config/nginx-teampulse.conf /etc/nginx/sites-available/teampulse
 sudo ln -s /etc/nginx/sites-available/teampulse /etc/nginx/sites-enabled/
 sudo nginx -t
 sudo systemctl reload nginx
-
-# Get SSL certificate
 sudo certbot --nginx -d yourdomain.com -d www.yourdomain.com
 ```
 
